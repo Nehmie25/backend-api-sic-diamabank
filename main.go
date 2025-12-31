@@ -7,13 +7,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	_ "github.com/godror/godror"
 	"github.com/google/uuid"
-	"sicbcrg.diamabank.com/internal/domain/models"
+	"sicbcrg.diamabank.com/internal/models"
 )
 
 var NumDeclarationPP int = 0
@@ -27,7 +28,29 @@ var err error
 var headerXml string = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` + "\n"
 
 func main() {
-	dataSourceName := `user="SICPROD" password="NMu6F0DtoXFnnkyHt80Z" connectString="10.0.16.3:1521/ORCLPDB"`
+	// Configuration depuis variables d'environnement
+	dbUser := os.Getenv("DB_USER")
+	if dbUser == "" {
+		dbUser = "SICPROD"
+	}
+	dbPassword := os.Getenv("DB_PASSWORD")
+	if dbPassword == "" {
+		dbPassword = "NMu6F0DtoXFnnkyHt80Z"
+	}
+	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		dbHost = "10.0.16.3"
+	}
+	dbPort := os.Getenv("DB_PORT")
+	if dbPort == "" {
+		dbPort = "1521"
+	}
+	dbName := os.Getenv("DB_NAME")
+	if dbName == "" {
+		dbName = "ORCLPDB"
+	}
+
+	dataSourceName := fmt.Sprintf(`user="%s" password="%s" connectString="%s:%s/%s"`, dbUser, dbPassword, dbHost, dbPort, dbName)
 	db, err = sql.Open("godror", dataSourceName)
 	if err != nil {
 		log.Fatalf("Error opening database connection: %v", err)
@@ -48,14 +71,22 @@ func main() {
 	router.HandleFunc("/declaration/encours", HandlerEncours)
 	router.HandleFunc("/declaration/comptedebiteurs", HandlerCompteDebiteurs)
 
+	// Configuration serveur depuis variables d'environnement
+	apiPort := os.Getenv("API_PORT")
+	if apiPort == "" {
+		apiPort = "8080"
+	}
+	serverAddr := "0.0.0.0:" + apiPort
+
 	server := http.Server{
-		Addr:         "10.0.21.32:8181",
+		Addr:         serverAddr,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  10 * time.Second,
 		Handler:      router,
 	}
 
+	fmt.Printf("API Server listening on %s\n", serverAddr)
 	log.Fatal(server.ListenAndServe())
 }
 
@@ -587,7 +618,7 @@ func HandlerEncours(w http.ResponseWriter, r *http.Request) {
 	//À implémenter
 	//Collecte des données pour formuler la réponse
 	rows, err := db.Query(`SELECT NatDec,RefIntEng,CodDev,DatEch,MntDerEch,MonPai,DatPai,MntHBil,MntRemAnt,MntCRDU,MntCreRat,MntUtilise,TO_CHAR(MntAgi),MntCapImp,
-MntTotImp, DatDefaill, MntPro, MntPerte, NbrEchPay, NbrEchImp, NbrEchRest, QualiCre, PD, LGD, CCF, IFRSStage, DatEvent FROM DIAMA.DBANK_ENCOURS`)
+    MntTotImp, DatDefaill, MntPro, MntPerte, NbrEchPay, NbrEchImp, NbrEchRest, QualiCre, PD, LGD, CCF, IFRSStage, DatEvent FROM DIAMA.DBANK_ENCOURS`)
 	if err != nil {
 		log.Fatalf("Error executing query: %v", err)
 	}

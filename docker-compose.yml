@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Les identifiants doivent être gérés via des secrets ou fichier .env
+      DB_USER: ${DB_USER:-SICPROD}
+      DB_PASSWORD: ${DB_PASSWORD:-NMu6F0DtoXFnnkyHt80Z}
+      DB_HOST: ${DB_HOST:-10.0.16.3}
+      DB_PORT: ${DB_PORT:-1521}
+      DB_NAME: ${DB_NAME:-ORCLPDB}
+    restart: unless-stopped
+    networks:
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge
