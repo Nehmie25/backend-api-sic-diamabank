@@ -45,7 +45,7 @@ Le paramètre `date` est optionnel et doit être au format **DD/MM/YY**
 
 ### Variables d'Environnement
 
-Créez un fichier `configs/.env` à la racine du projet avec les variables suivantes:
+Créez un fichier `.env` à la racine du projet avec les variables suivantes:
 
 ```env
 # Configuration de la base de données Oracle
@@ -59,8 +59,6 @@ DB_NAME=nom_base_de_donnée
 # Port de l'API (optionnel, par défaut 8080)
 API_PORT=8080
 ```
-
-**Note**: Les valeurs par défaut sont déjà définies dans le code si le fichier `.env` n'existe pas.
 
 ## Installation et Lancement
 
