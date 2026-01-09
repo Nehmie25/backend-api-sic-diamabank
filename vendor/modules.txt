@@ -19,6 +19,9 @@ github.com/godror/knownpb/timestamppb
 # github.com/google/uuid v1.6.0
 ## explicit
 github.com/google/uuid
+# github.com/joho/godotenv v1.5.1
+## explicit; go 1.12
+github.com/joho/godotenv
 # golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6
 ## explicit; go 1.23.0
 golang.org/x/exp/slices
