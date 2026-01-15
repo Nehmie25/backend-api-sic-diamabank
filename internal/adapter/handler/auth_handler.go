@@ -39,3 +39,15 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
+
+func (h *AuthHandler) GetAllUsers(c *gin.Context) {
+
+	config.EnableCORS(c.Writer)
+
+	users, err := h.service.GetUsers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to retrieve users"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"users": users})
+}

@@ -69,15 +69,31 @@ func main() {
 	serviceDEB := service.NewCompteDebiteursService(repoDEB)
 	HandlerCompteDebiteurs := handler.HandlerCompteDebiteurs(serviceDEB)
 
-	repoUser := repository.NewUserRepo(pgdb) 
-	serviceUser := service.NewAuthService(repoUser, tokenService)
-	HandlerUser := handler.NewAuthHandler(serviceUser)
+	AuthRepo := repository.NewUserRepo(pgdb) 
+	AuthService := service.NewAuthService(AuthRepo, tokenService)
+	HandlerAuth := handler.NewAuthHandler(AuthService)
+
+
+
+
+
+	UserRepo := repository.NewUserRepo(pgdb)
+	UserService := service.NewUserService(UserRepo)
+	HandlerUser := handler.HandlerUser(UserService)
+
+	AddUserRepo := repository.NewUserRepo(pgdb)
+	AddUserService := service.NewUserService(AddUserRepo)
+	HandlerAddUser := handler.HandlerAddUser(AddUserService)
+
+	ModifyStatusRepo := repository.NewUserRepo(pgdb)
+	ModifyStatusService := service.NewUserService(ModifyStatusRepo)
+	HandlerModifyStatus := handler.ModifyStatus(ModifyStatusService)
 
 	//API avec Gin
 	router := gin.Default()
 
 	// Routes publiques (sans JWT)
-	router.POST("/login", HandlerUser.Login)
+	router.POST("/login", HandlerAuth.Login)
 
 	// Routes protégées (avec JWT)
 	protected := router.Group("/declaration")
@@ -88,6 +104,14 @@ func main() {
 		protected.GET("/engagements", gin.WrapH(HandlerEngagement))
 		protected.GET("/encours", gin.WrapH(HandlerEncours))
 		protected.GET("/comptedebiteurs", gin.WrapH(HandlerCompteDebiteurs))
+	}
+
+	protectedUser := router.Group("/users")
+	protectedUser.Use(handler.JWTMiddleware(tokenService))
+	{
+		protectedUser.GET("/", gin.WrapH(HandlerUser))
+		protectedUser.POST("/adduser", gin.WrapH(HandlerAddUser))
+		protectedUser.POST("/modifystatus", gin.WrapH(HandlerModifyStatus))
 	}
 
 	log.Fatal(router.Run("10.0.20.32:8181"))

@@ -74,7 +74,19 @@ type Data struct {
 	Declaration interface{} `xml:"declaration"`
 }
 
+type JsonData struct {
+	Users interface{} `xml:"declaration"`
+}
+
 type Meta struct {
+	Status      int    `xml:"status"`
+	Message     string `xml:"message"`
+	RequestTime string `xml:"requestTime"`
+	RequestID   string `xml:"requestId"`
+}
+
+
+type JsonMeta struct {
 	Status      int    `xml:"status"`
 	Message     string `xml:"message"`
 	RequestTime string `xml:"requestTime"`
@@ -84,4 +96,9 @@ type Meta struct {
 type Response struct {
 	Meta Meta `xml:"meta"`
 	Data Data `xml:"data"`
+}
+
+type JsonResponse struct {
+	Meta JsonMeta `json:"meta"`
+	Data JsonData `json:"data"`
 }

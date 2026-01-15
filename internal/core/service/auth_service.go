@@ -38,3 +38,21 @@ func (s *AuthService) Login(email, password string) (string, error) {
 
 	return s.token.Generate(user.Id, user.Role)
 }
+
+
+func (s *AuthService) GetUsers() ([]string, error) {
+	users, err := s.userRepo.FindAll()
+	if err != nil {
+		return nil, errors.New("failed to retrieve users")
+	}
+
+	var userNames []string
+	for _, user := range users {
+		userNames = append(userNames, user.Nom)
+	}
+
+	return userNames, nil
+}
+
+
+
