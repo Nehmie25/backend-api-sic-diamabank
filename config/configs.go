@@ -87,10 +87,8 @@ type Meta struct {
 
 
 type JsonMeta struct {
-	Status      int    `xml:"status"`
-	Message     string `xml:"message"`
-	RequestTime string `xml:"requestTime"`
-	RequestID   string `xml:"requestId"`
+	Status      int    `json:"status"`
+	Message     string `json:"message"`
 }
 
 type Response struct {

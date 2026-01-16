@@ -32,7 +32,7 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 }
 func (r *UserRepository) FindAll() ([]models.User, error) {
 	rows, err := r.db.Query(`
-		SELECT id, nom, email, role
+		SELECT id, nom, email, role, isactive
 		FROM public.user
 	`)
 	if err != nil {
@@ -43,7 +43,7 @@ func (r *UserRepository) FindAll() ([]models.User, error) {
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		err := rows.Scan(&u.Id, &u.Nom, &u.Email, &u.Role)
+		err := rows.Scan(&u.Id, &u.Nom, &u.Email, &u.Role, &u.Isactive)
 		if err != nil {
 			return nil, err
 		}
@@ -56,8 +56,7 @@ func (r *UserRepository) FindAll() ([]models.User, error) {
 func (r *UserRepository) AddUser(nom, email, motdepasse, role string) (error) {
 	_, err := r.db.Exec(`
 		INSERT INTO public.user (nom,email,motdepasse,role,isactive) 
-		VALUES ($1,$2,$3,$4,$5)
-	`, nom, email, motdepasse, role, true)
+		VALUES ($1,$2,$3,$4,$5)`, nom, email, motdepasse, role, true)
 	if err != nil {
 		return err
 	}

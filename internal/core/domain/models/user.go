@@ -9,9 +9,14 @@ type User struct {
 	Id           string     	`json:"id"`
 	Nom          string     	`json:"nom"`
 	Email        string 		`json:"email"`
-	MotDePasse   string  		`json:"-"`
+	MotDePasse   string  		`json:"motDePasse"`
 	Role         string  		`json:"role"`
 	Isactive		bool   		`json:"isactive"`
 	CreatedAt    time.Time  	`json:"createdAt"`
 	UpdatedAt    time.Time  	`json:"updatedAt"`
+}
+
+type UserStatus struct {
+	Id       int  `json:"id"`
+	Isactive bool `json:"isactive"`
 }

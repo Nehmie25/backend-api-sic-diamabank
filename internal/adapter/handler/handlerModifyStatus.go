@@ -2,32 +2,28 @@ package handler
 
 import (
 	"GoWebapitest/config"
+	"GoWebapitest/internal/core/domain/models"
 	"GoWebapitest/internal/core/service"
 	"encoding/json"
+	"fmt"
 	"net/http"
-	"strconv"
 )
 
 func ModifyStatus(service *service.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Récupérer les paramètres du formulaire par POST
-		idStr := r.FormValue("id")
-		isactiveStr := r.FormValue("isactive")
-		id, err := strconv.Atoi(idStr)
+
+		var body models.UserStatus
+
+		fmt.Println(r.Body)
+		err := json.NewDecoder(r.Body).Decode(&body)
 		if err != nil {
-			http.Error(w, "Invalid id parameter", http.StatusBadRequest)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
 			return
 		}
 
-		isactive, err := strconv.ParseBool(isactiveStr)
-		if err != nil {
-			http.Error(w, "Invalid isactive parameter", http.StatusBadRequest)
-			return
-		}
-
-		err = service.ModifyStatus(id, isactive)
-
+		err = service.ModifyStatus(body.Id, body.Isactive)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
