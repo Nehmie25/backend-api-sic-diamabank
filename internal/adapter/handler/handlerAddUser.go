@@ -27,7 +27,7 @@ func HandlerAddUser(service *service.UserService) http.HandlerFunc {
 			http.Error(w, "Missing required fields", http.StatusBadRequest)
 			return
 		}
-		
+
 		hash, err := bcrypt.GenerateFromPassword([]byte(body.MotDePasse), bcrypt.DefaultCost)
 		if err != nil {
 			http.Error(w, "Error hashing password", http.StatusInternalServerError)
@@ -39,17 +39,17 @@ func HandlerAddUser(service *service.UserService) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-			response := struct {
-				Meta config.JsonMeta `json:"meta"`
-			}{
-				Meta: config.JsonMeta{
-					Status:  200,
-					Message: "success",
-				},
-			}
-
-			config.EnableCORS(w)
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
+		response := struct {
+			Meta config.JsonMeta `json:"meta"`
+		}{
+			Meta: config.JsonMeta{
+				Status:  200,
+				Message: "success",
+			},
 		}
+
+		config.EnableCORS(w)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}
 }

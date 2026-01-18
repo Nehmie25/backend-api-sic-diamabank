@@ -44,9 +44,9 @@ func main() {
 
 	// Initialiser le service JWT
 	jwtSecret := os.Getenv("JWT_SECRET")
-	if jwtSecret == "" {
-		jwtSecret = "your-secret-key" // À remplacer par une vraie clé secrète
-	}
+	// if jwtSecret == "" {
+	// 	jwtSecret = "your-secret-key" // À remplacer par une vraie clé secrète
+	// }
 	tokenService := jwt.NewJWTService(jwtSecret, 1*time.Hour)
 
 	repoPP := repository.NewPersonnePhysiqueRepo(db)
@@ -110,8 +110,8 @@ func main() {
 	protectedUser.Use(handler.JWTMiddleware(tokenService))
 	{
 		protectedUser.GET("/", gin.WrapH(HandlerUser))
-		protectedUser.POST("/adduser", gin.WrapH(HandlerAddUser))
-		protectedUser.POST("/modifystatus", gin.WrapH(HandlerModifyStatus))
+		protectedUser.POST("/register", gin.WrapH(HandlerAddUser))
+		protectedUser.POST("/updatestate", gin.WrapH(HandlerModifyStatus))
 	}
 
 	log.Fatal(router.Run("10.0.20.32:8181"))

@@ -17,12 +17,12 @@ func NewUserRepo(db *sql.DB) *UserRepository {
 
 func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 	query := r.db.QueryRow(`
-		SELECT id, email, motdepasse, role
+		SELECT id, email, motdepasse, role, isactive
 		FROM public.user
 		WHERE email = $1
 	`, email)
 	var u models.User
-	err := query.Scan(&u.Id, &u.Email, &u.MotDePasse, &u.Role)
+	err := query.Scan(&u.Id, &u.Email, &u.MotDePasse, &u.Role, &u.Isactive)
 	if err != nil {
 		fmt.Println("Error in FindByEmail:", err)
 		return nil, err
@@ -49,7 +49,6 @@ func (r *UserRepository) FindAll() ([]models.User, error) {
 		}
 		users = append(users, u)
 	}
-
 	return users, nil
 }
 

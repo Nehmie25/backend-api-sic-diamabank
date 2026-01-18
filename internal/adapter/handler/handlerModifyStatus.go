@@ -5,7 +5,6 @@ import (
 	"GoWebapitest/internal/core/domain/models"
 	"GoWebapitest/internal/core/service"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -16,7 +15,6 @@ func ModifyStatus(service *service.UserService) http.HandlerFunc {
 
 		var body models.UserStatus
 
-		fmt.Println(r.Body)
 		err := json.NewDecoder(r.Body).Decode(&body)
 		if err != nil {
 			http.Error(w, "Invalid request body", http.StatusBadRequest)

@@ -33,11 +33,11 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	token, err := h.service.Login(body.Email, body.Password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": false})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{"token": token,"status": true})
 }
 
 func (h *AuthHandler) GetAllUsers(c *gin.Context) {
@@ -46,7 +46,7 @@ func (h *AuthHandler) GetAllUsers(c *gin.Context) {
 
 	users, err := h.service.GetUsers()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to retrieve users"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"users": users})

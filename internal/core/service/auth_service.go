@@ -23,27 +23,31 @@ func NewAuthService(
 }
 
 func (s *AuthService) Login(email, password string) (string, error) {
-	user, err := s.userRepo.FindByEmail(email)
 
+	user, err := s.userRepo.FindByEmail(email)
 	if err != nil {
-		return "", errors.New("invalid credentials")
+		return "", errors.New("Identifiants invalides")
 	}
 
 	if bcrypt.CompareHashAndPassword(
 		[]byte(user.MotDePasse),
 		[]byte(password),
 	) != nil {
-		return "", errors.New("invalid credentials")
+		return "", errors.New("Identifiants invalides")
 	}
 
-	return s.token.Generate(user.Id, user.Role)
+	if user.Isactive == false {
+		return "", errors.New("l'utilisateur n'est pas actif. Veuillez contacter l'administrateur pour réactiver votre compte.")
+	}
+
+	return s.token.Generate(user.Id, user.Role, user.Email)
 }
 
 
 func (s *AuthService) GetUsers() ([]string, error) {
 	users, err := s.userRepo.FindAll()
 	if err != nil {
-		return nil, errors.New("failed to retrieve users")
+		return nil, errors.New("échec l'ors de la récupération des utilisateurs")
 	}
 
 	var userNames []string

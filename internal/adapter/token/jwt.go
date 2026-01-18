@@ -18,10 +18,11 @@ func NewJWTService(secret string, expire time.Duration) *JWTService {
 	}
 }
 
-func (j *JWTService) Generate(userID string, role string) (string, error) {
+func (j *JWTService) Generate(userID string, role string, email string) (string, error) {
 	claims := jwt.MapClaims{
 		"sub":  userID,
 		"role": role,
+		"email": email,
 		"exp":  time.Now().Add(j.expire).Unix(),
 	}
 
