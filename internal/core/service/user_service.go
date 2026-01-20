@@ -19,6 +19,6 @@ func (s *UserService) GetAllUsers() ([]models.User, error) {
 func (s *UserService) AddUser(nom, email, motdepasse, role string) error {
 	return s.repo.AddUser(nom, email, motdepasse, role)
 }
-func (s *UserService) ModifyStatus(id int, isactive bool) error {
+func (s *UserService) ModifyStatus(id string, isactive bool) error {
 	return s.repo.ModifyStatus(id, isactive)
 }

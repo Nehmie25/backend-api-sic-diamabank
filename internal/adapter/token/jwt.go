@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -18,11 +19,13 @@ func NewJWTService(secret string, expire time.Duration) *JWTService {
 	}
 }
 
-func (j *JWTService) Generate(userID string, role string, email string) (string, error) {
+func (j *JWTService) Generate(userID string, role string, email string, nom string) (string, error) {
+	fmt.Println("nom:", nom)
 	claims := jwt.MapClaims{
-		"sub":  userID,
+		"id":  userID,
 		"role": role,
 		"email": email,
+		"nom": nom,
 		"exp":  time.Now().Add(j.expire).Unix(),
 	}
 

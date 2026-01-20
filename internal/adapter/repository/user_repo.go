@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	"GoWebapitest/internal/core/domain/models"
 )
@@ -17,12 +18,12 @@ func NewUserRepo(db *sql.DB) *UserRepository {
 
 func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 	query := r.db.QueryRow(`
-		SELECT id, email, motdepasse, role, isactive
+		SELECT id, email, motdepasse, role, isactive,nom
 		FROM public.user
 		WHERE email = $1
 	`, email)
 	var u models.User
-	err := query.Scan(&u.Id, &u.Email, &u.MotDePasse, &u.Role, &u.Isactive)
+	err := query.Scan(&u.Id, &u.Email, &u.MotDePasse, &u.Role, &u.Isactive, &u.Nom)
 	if err != nil {
 		fmt.Println("Error in FindByEmail:", err)
 		return nil, err
@@ -33,7 +34,7 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 func (r *UserRepository) FindAll() ([]models.User, error) {
 	rows, err := r.db.Query(`
 		SELECT id, nom, email, role, isactive
-		FROM public.user
+		FROM public.user ORDER BY id ASC
 	`)
 	if err != nil {
 		return nil, err
@@ -62,11 +63,18 @@ func (r *UserRepository) AddUser(nom, email, motdepasse, role string) (error) {
 	return nil
 }
 
-func (r *UserRepository) ModifyStatus(id int, isactive bool) (error) {
-	_, err := r.db.Exec(`
+func (r *UserRepository) ModifyStatus(id string, isactive bool) (error) {
+	//convertir id en int
+	intid, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+
+
+	_, err = r.db.Exec(`
 		UPDATE public.user SET isactive=$1
 		WHERE id = $2
-	`, isactive, id)
+	`, isactive, intid)
 	if err != nil {
 		return err
 	}

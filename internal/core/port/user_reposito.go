@@ -6,5 +6,5 @@ type UserRepository interface {
 	FindByEmail(email string) (*models.User, error)
 	FindAll() ([]models.User, error)
 	AddUser(nom, email, motdepasse, role string) error
-	ModifyStatus(id int, isactive bool) error
+	ModifyStatus(id string, isactive bool) error
 }

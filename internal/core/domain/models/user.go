@@ -17,6 +17,6 @@ type User struct {
 }
 
 type UserStatus struct {
-	Id       int  `json:"id"`
+	Id       string  `json:"id"`
 	Isactive bool `json:"isactive"`
 }

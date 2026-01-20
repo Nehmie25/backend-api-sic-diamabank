@@ -40,7 +40,7 @@ func (s *AuthService) Login(email, password string) (string, error) {
 		return "", errors.New("l'utilisateur n'est pas actif. Veuillez contacter l'administrateur pour réactiver votre compte.")
 	}
 
-	return s.token.Generate(user.Id, user.Role, user.Email)
+	return s.token.Generate(user.Id, user.Role, user.Email, user.Nom)
 }
 
 
