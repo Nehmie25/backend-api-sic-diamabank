@@ -75,7 +75,11 @@ type Data struct {
 }
 
 type JsonData struct {
-	Users interface{} `xml:"declaration"`
+	Users interface{} `json:"Users"`
+}
+
+type Jsonpagination struct {
+	Pagination interface{} `json:"Users"`
 }
 
 type Meta struct {

@@ -17,7 +17,6 @@ func NewHistoriqueRepository(db *sql.DB) *HistoriqueRepository {
 }
 
 func (r *HistoriqueRepository) Save(log *models.Historique) error {
-	fmt.Println("Saving log:", log)
 	UserId := log.UserID
 	UserIdInt, _ := strconv.Atoi(UserId)
 	_, err := r.db.Exec(`
@@ -33,3 +32,29 @@ func (r *HistoriqueRepository) Save(log *models.Historique) error {
 	}
 	return nil
 }
+
+func (r *HistoriqueRepository) FindAllLogs(offset int) ([]*models.Historique, error) {
+	rows,err := r.db.Query(`SELECT * FROM public.historique LIMIT 50 OFFSET $1`, offset)
+	if err != nil{
+		return nil, err
+	}
+	defer rows.Close()
+	var logs []*models.Historique
+	for rows.Next(){
+		var log models.Historique
+		err := rows.Scan(&log.ID, &log.Operation, &log.UserID, &log.UserNames, &log.Date, &log.Time)
+		if err != nil{
+			fmt.Println("Error scanning log:", err)
+			return nil, err
+		}
+		logs = append(logs, &log)
+	}
+	return logs, nil
+}
+
+func (r *HistoriqueRepository) Count() (int, error) {
+	var total int
+	err := r.db.QueryRow(`SELECT COUNT(*) FROM historique`).Scan(&total)
+	return total, err
+}
+
