@@ -8,7 +8,7 @@ import (
 
 	"GoWebapitest/internal/adapter/handler"
 	"GoWebapitest/internal/adapter/repository"
-	// oracle "GoWebapitest/internal/adapter/repository/Oracle"
+	oracle "GoWebapitest/internal/adapter/repository/Oracle"
 	postgres "GoWebapitest/internal/adapter/repository/Postgres"
 	jwt "GoWebapitest/internal/adapter/token"
 	"GoWebapitest/internal/core/service"
@@ -35,10 +35,10 @@ func main() {
 		log.Fatal("DB_DSN non défini")
 	}
 
-	// db, err := oracle.ConnectDB(dsn)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	db, err := oracle.ConnectDB(dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	pgdb := postgres.ConnectDB()
 
@@ -47,25 +47,25 @@ func main() {
 
 	tokenService := jwt.NewJWTService(jwtSecret, 1*time.Hour)
 
-	// repoPP := repository.NewPersonnePhysiqueRepo(db)
-	// servicePP := service.NewPersonnePhysiqueService(repoPP)
-	// HandlerPersonnePhysique := handler.HandlerPersonnePhysique(servicePP)
+	repoPP := repository.NewPersonnePhysiqueRepo(db)
+	servicePP := service.NewPersonnePhysiqueService(repoPP)
+	HandlerPersonnePhysique := handler.HandlerPersonnePhysique(servicePP)
 
-	// repoPM := repository.NewPersonneMoralRepo(db)
-	// servicePM := service.NewPersonneMoralService(repoPM)
-	// HandlerPersonneMorale := handler.HandlerPersonneMoral(servicePM)
+	repoPM := repository.NewPersonneMoralRepo(db)
+	servicePM := service.NewPersonneMoralService(repoPM)
+	HandlerPersonneMorale := handler.HandlerPersonneMoral(servicePM)
 
-	// repoENG := repository.NewEngagementRepo(db)
-	// serviceENG := service.NewEngagementService(repoENG)
-	// HandlerEngagement := handler.HandlerEngagement(serviceENG)
+	repoENG := repository.NewEngagementRepo(db)
+	serviceENG := service.NewEngagementService(repoENG)
+	HandlerEngagement := handler.HandlerEngagement(serviceENG)
 
-	// repoENC := repository.NewEncoursRepo(db)
-	// serviceENC := service.NewEncoursService(repoENC)
-	// HandlerEncours := handler.HandlerEncours(serviceENC)
+	repoENC := repository.NewEncoursRepo(db)
+	serviceENC := service.NewEncoursService(repoENC)
+	HandlerEncours := handler.HandlerEncours(serviceENC)
 
-	// repoDEB := repository.NewCompteDebiteursRepo(db)
-	// serviceDEB := service.NewCompteDebiteursService(repoDEB)
-	// HandlerCompteDebiteurs := handler.HandlerCompteDebiteurs(serviceDEB)
+	repoDEB := repository.NewCompteDebiteursRepo(db)
+	serviceDEB := service.NewCompteDebiteursService(repoDEB)
+	HandlerCompteDebiteurs := handler.HandlerCompteDebiteurs(serviceDEB)
 
 	AuthRepo := repository.NewUserRepo(pgdb)
 	AuthService := service.NewAuthService(AuthRepo, tokenService)
@@ -102,11 +102,11 @@ func main() {
 	protected := router.Group("/declaration")
 	protected.Use(handler.JWTMiddleware(tokenService),handler.HistoriqueMiddleware(HistoriqueService))
 	{
-		// protected.GET("/personnephysique", gin.WrapH(HandlerPersonnePhysique))
-		// protected.GET("/personnemorale", gin.WrapH(HandlerPersonneMorale))
-		// protected.GET("/engagements", gin.WrapH(HandlerEngagement))
-		// protected.GET("/encours", gin.WrapH(HandlerEncours))
-		// protected.GET("/comptedebiteurs", gin.WrapH(HandlerCompteDebiteurs))
+		protected.GET("/personnephysique", gin.WrapH(HandlerPersonnePhysique))
+		protected.GET("/personnemorale", gin.WrapH(HandlerPersonneMorale))
+		protected.GET("/engagements", gin.WrapH(HandlerEngagement))
+		protected.GET("/encours", gin.WrapH(HandlerEncours))
+		protected.GET("/comptedebiteurs", gin.WrapH(HandlerCompteDebiteurs))
 	}
 
 	protectedUser := router.Group("/users")
